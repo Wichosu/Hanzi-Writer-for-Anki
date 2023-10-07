@@ -1,0 +1,84 @@
+  <div id='container' style='max-width: 100%;'>
+
+  </div>
+
+<script type='text/javascript'>
+  const container = document.querySelector("#container");
+
+  let length = "你好，我叫李月，再见".length;
+  const characters = "你好，我叫李月，再见".split("");
+  const js = document.createElement("script");
+  js.type = "text/javascript";
+  js.src = "https://cdn.jsdelivr.net/npm/hanzi-writer@2.2/dist/hanzi-writer.min.js";
+  js.onload = () => {
+    characters.forEach((char, index) => {
+      if (char == "，" || char == "。") {
+        length--;
+        return
+      }
+
+      //general purpose variables
+      const strokeColor = "#777";
+      let scale = 1;
+      let margin = 2;
+      const target = `target-${char}-${index}`;
+      
+      //svg canvas
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const lineHorizontal = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      const lineVertical = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      const lineDiagonalLeft = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      const lineDiagonalRight = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+      //canvas form and svg styles
+      /*
+      if(length > 2) {
+        scale = 0.9;
+      }
+      if(length > 4) {
+        scale = 0.7;
+        margin = 1;
+      }
+      if(length > 6) {
+        scale = 0.4;
+        margin = 0;
+      }*/
+
+      svg.width = 100;
+      svg.height = 100;
+      svg.style.border = "1px solid black";
+      svg.style.transform = `scale(${scale})`;
+      svg.style.margin = `${margin}px`;
+      svg.id = target;
+
+      const FormLine = (element, x1, y1, x2, y2, stroke) => {
+        element.x1.baseVal.value = x1;
+        element.y1.baseVal.value = y1;
+        element.x2.baseVal.value = x2;
+        element.y2.baseVal.value = y2;
+        element.setAttribute('stroke', stroke);
+      }
+
+      FormLine(lineDiagonalLeft, 0, 0, 100, 100, strokeColor);
+      FormLine(lineDiagonalRight, 100, 0, 0, 100, strokeColor);
+      FormLine(lineVertical, 50, 0, 50, 100, strokeColor);
+      FormLine(lineHorizontal, 0, 50, 100, 50, strokeColor);
+
+      //insert svg
+      svg.append(lineDiagonalLeft, lineDiagonalRight, lineVertical, lineHorizontal);
+
+      container.appendChild(svg);
+
+      //insert hanzi
+      const writer = HanziWriter.create(target, char, {
+        width: 100,
+        height: 100,
+        padding: 5,
+      });
+
+      writer.loopCharacterAnimation();
+    })
+  }
+
+  document.body.appendChild(js);
+</script>
